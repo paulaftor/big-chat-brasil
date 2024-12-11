@@ -1,36 +1,101 @@
-/* src/components/Register.css */
+/* src/components/Login.css */
+
 .register-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh; /* faz a tela ocupar toda a altura */
+    background-color:  #dde9ff;
+    color:  #7eabff;
+}
+
+form {
+    background: white;
+    padding: 70px;
+    border-radius: 8px; /* bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* sombra */
+    background-color: rgb(255, 255, 255, 0.25); /* fundo branco com transparência */
+}
+
+form input,
+form button {
+    max-width: 700px; /* Define uma largura máxima maior */
+    min-width: 300px; /* Define uma largura mínima */
+    padding: 10px; /* Aumenta o espaço interno */
+    font-size: 16px; /* Texto maior para melhor visualização */
+    box-sizing: border-box; /* Inclui o padding e as bordas na largura total */
+    margin: 15px auto; /* Adiciona espaçamento entre os elementos */
+    display: block; /* Garante que fiquem em linhas separadas */
+    color:  #7eabff;
+    border: none;
+}
+
+form button {
+    background-color:  #7eabff;
+    color: white; /* Texto branco */
+    border: none; /* Remove a borda */
+    border-radius: 6px; /* Bordas levemente arredondadas */
+    cursor: pointer;
+    padding: 10px; /* Espaço interno maior */
+    font-size: 14px; /* Texto maior */
+    transition: background-color 0.3s; /* Suaviza a mudança de cor ao passar o mouse */
+}
+
+form button:hover {
+    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+}
+
+row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 40px;
+    margin: 10px 0; /* espaço entre as linhas */
 }
 
 input {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin: 10px 0; /* espaço entre os inputs */
+    padding: 10px; /* espaço interno */
+    border: 1px solid #ccc; /* borda clara */
+    border-radius: 4px; /* bordas arredondadas */
 }
 
 button {
-    width: 100%;
-    padding: 0.8rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: #007bff; /* azul */
+    color: white; /* texto branco */
+    border: none; /* sem borda */
+    border-radius: 4px; /* bordas arredondadas */
+    padding: 10px; /* espaço interno */
+    cursor: pointer; /* ponteiro do mouse */
+    width: 10%; /* ocupa a largura total */
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #0056b3; /* azul mais escuro ao passar o mouse */
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 2rem;
+.login-button {
+    margin-bottom: 15px; /* Adiciona espaço abaixo do botão */
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.forgot-password-link {
+    display: block; /* Garante que o link fique em uma linha separada */
+    margin-top: 15px; /* Adiciona espaço acima do link */
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
 }

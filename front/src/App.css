@@ -1,38 +1,63 @@
+/* Estilos gerais para a página */
 .App {
-  text-align: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color:  #dde9ff;
+    font-family: Arial, sans-serif;
+    padding-top: 100px; /* Ajuste conforme o tamanho do seu cabeçalho */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Lista de mensagens */
+.message-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 60px 20px 20px;
+    margin-bottom: 80px; /* Para não sobrepor a barra de digitação */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Barra de entrada fixada na parte inferior */
+.input-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    padding: 10px;
+    background-color: white;
+    border-top: 1px solid #ddd;
+    z-index: 10;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Estilo do campo de input */
+.input-section input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
-.App-link {
-  color: #61dafb;
+.input-section button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input-section button:hover {
+    background-color: #0056b3;
+}
+
+.headerst {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.45);
+    border-bottom: 1px solid #ddd;
+    color: #7eabff;
 }

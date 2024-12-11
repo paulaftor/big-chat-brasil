@@ -46,7 +46,7 @@ const Register = () => {
     return (
         <div className="register-container">
             <form onSubmit={handleSubmit}>
-                <h2>Cadastro</h2>
+                <h2>Crie sua conta</h2>
                 <input
                     type="text"
                     placeholder="Username"

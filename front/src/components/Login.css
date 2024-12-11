@@ -6,7 +6,9 @@
     align-items: center;
     justify-content: center;
     height: 70vh; /* faz a tela ocupar toda a altura */
-    background-color: #f0f0f0; /* fundo claro */
+    /*background-color:  #dde9ff;*/
+    color:  #7eabff;
+
 }
 
 form {
@@ -14,6 +16,35 @@ form {
     padding: 70px;
     border-radius: 8px; /* bordas arredondadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* sombra */
+    background-color: rgb(255, 255, 255, 0.25); /* fundo branco com transparência */
+}
+
+form input,
+form button {
+    max-width: 700px; /* Define uma largura máxima maior */
+    min-width: 300px; /* Define uma largura mínima */
+    padding: 10px; /* Aumenta o espaço interno */
+    font-size: 16px; /* Texto maior para melhor visualização */
+    box-sizing: border-box; /* Inclui o padding e as bordas na largura total */
+    margin: 15px auto; /* Adiciona espaçamento entre os elementos */
+    display: block; /* Garante que fiquem em linhas separadas */
+    color:  #7eabff;
+    border: none;
+}
+
+form button {
+    background-color:  #7eabff;
+    color: white; /* Texto branco */
+    border: none; /* Remove a borda */
+    border-radius: 6px; /* Bordas levemente arredondadas */
+    cursor: pointer;
+    padding: 10px; /* Espaço interno maior */
+    font-size: 14px; /* Texto maior */
+    transition: background-color 0.3s; /* Suaviza a mudança de cor ao passar o mouse */
+}
+
+form button:hover {
+    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
 }
 
 row {
@@ -29,7 +60,6 @@ input {
     padding: 10px; /* espaço interno */
     border: 1px solid #ccc; /* borda clara */
     border-radius: 4px; /* bordas arredondadas */
-    width: 100%; /* ocupa a largura total */
 }
 
 button {
@@ -44,4 +74,29 @@ button {
 
 button:hover {
     background-color: #0056b3; /* azul mais escuro ao passar o mouse */
+}
+
+.login-button {
+    margin-bottom: 15px; /* Adiciona espaço abaixo do botão */
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.forgot-password-link {
+    display: block; /* Garante que o link fique em uma linha separada */
+    margin-top: 15px; /* Adiciona espaço acima do link */
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
 }

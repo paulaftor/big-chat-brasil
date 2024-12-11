@@ -1,36 +1,97 @@
-.chat-container {
+.message-item {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.45);
+    color: #2c549e;
 }
 
-.message-list {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 10px;
+.message-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+
 }
 
-.message-item {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-right: 10px; /* Avatar fora da mensagem */
+}
+
+.message-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.message-username {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.message-timestamp {
+    font-size: 0.8rem;
+    color: #2c549e;
+    padding: 0 10px;
+}
+
+.message-body {
+    margin-top: 5px;
+    padding-left: 5px; /* Avatar dentro da mensagem */
+}
+
+.message-date {
+    text-align: center;
+    color: #7caaff;
+    font-size: 1rem;
+    margin: 20px 0 10px 0;
+
 }
 
 .input-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
+    align-items: center; /* Alinha os itens verticalmente */
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 70px; /* Altura consistente */
+    border-top: 0px solid #ddd;
+    z-index: 10;
+    color: #7eabff;
+    padding: 10px; /* Certifique-se de que há espaço ao redor */
 }
 
-input {
-    margin-right: 10px;
-    padding: 10px;
+.input-section input {
     flex: 1;
+    margin-right: 10px;
+    border-radius: 5px;
+    height: 70px; /* Define a mesma altura que o botão */
+    padding: 10px; /* Certifique-se de que o padding é consistente */
+    font-size: 16px;
+    box-sizing: border-box; /* Inclui padding na largura total */
+    height: 45px; /* Define a mesma altura que o botão */
+    color: #7eabff;
+    border: 1px solid #ddd; /* Adiciona borda para consistência */
 }
 
-button {
-    padding: 10px;
-    background-color: #007bff;
+.input-section button {
+    background-color: #7eabff;
+    display: flex; /* Usar flexbox */
+    align-items: center; /* Alinha verticalmente */
+    justify-content: center; /* Alinha horizontalmente */
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 100%;
+    width: 45px; /* Tamanho consistente */
+    height: 45px; /* Tamanho consistente */
 }
