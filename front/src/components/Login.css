@@ -1,0 +1,47 @@
+/* src/components/Login.css */
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh; /* faz a tela ocupar toda a altura */
+    background-color: #f0f0f0; /* fundo claro */
+}
+
+form {
+    background: white;
+    padding: 70px;
+    border-radius: 8px; /* bordas arredondadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* sombra */
+}
+
+row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 40px;
+    margin: 10px 0; /* espaço entre as linhas */
+}
+
+input {
+    margin: 10px 0; /* espaço entre os inputs */
+    padding: 10px; /* espaço interno */
+    border: 1px solid #ccc; /* borda clara */
+    border-radius: 4px; /* bordas arredondadas */
+    width: 100%; /* ocupa a largura total */
+}
+
+button {
+    background-color: #007bff; /* azul */
+    color: white; /* texto branco */
+    border: none; /* sem borda */
+    border-radius: 4px; /* bordas arredondadas */
+    padding: 10px; /* espaço interno */
+    cursor: pointer; /* ponteiro do mouse */
+    width: 10%; /* ocupa a largura total */
+}
+
+button:hover {
+    background-color: #0056b3; /* azul mais escuro ao passar o mouse */
+}
