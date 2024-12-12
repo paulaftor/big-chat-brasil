@@ -60,4 +60,5 @@
     background-color: rgba(255, 255, 255, 0.45);
     border-bottom: 1px solid #ddd;
     color: #7eabff;
+    z-index: 1000;  /* Garante que o cabeçalho fique sobre os outros elementos */
 }

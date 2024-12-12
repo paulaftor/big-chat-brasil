@@ -2,7 +2,6 @@ package com.sd.demo.entity;
 
 import jakarta.persistence.*;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,17 +12,19 @@ public class Mensagem {
 
     private String conteudo;
 
-    @ManyToOne
-    private Usuario remetente;
+    @Column(name = "remetente_username")
+    private String remetente;
 
     @Column(name = "data_envio")
     private LocalDateTime dataEnvio;
 
-    public Mensagem(String conteudo, Usuario usuario) {
-        this.conteudo = conteudo;
-        this.remetente = usuario;
-        this.dataEnvio = LocalDateTime.now();
+    public Mensagem() {
+    }
 
+    public Mensagem(String conteudo, String remetente, LocalDateTime dataEnvio) {
+        this.conteudo = conteudo;
+        this.remetente = remetente;
+        this.dataEnvio = dataEnvio;
     }
 
     public Long getId() {
@@ -42,12 +43,12 @@ public class Mensagem {
         this.conteudo = conteudo;
     }
 
-    public Usuario getRemetente(){
+    public String getRemetente() {
         return remetente;
     }
 
-    public void setRemetente(Usuario usuario){
-        this.remetente = usuario;
+    public void setRemetente(String remetente) {
+        this.remetente = remetente;
     }
 
     public LocalDateTime getDataEnvio() {
@@ -57,5 +58,4 @@ public class Mensagem {
     public void setDataEnvio(LocalDateTime dataEnvio) {
         this.dataEnvio = dataEnvio;
     }
-
 }

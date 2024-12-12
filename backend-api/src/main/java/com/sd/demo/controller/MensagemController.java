@@ -2,8 +2,10 @@ package com.sd.demo.controller;
 
 import com.sd.demo.entity.Mensagem;
 import com.sd.demo.service.MensagemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,15 +16,19 @@ import java.util.List;
 public class MensagemController {
     private final MensagemService mensagemService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     // injeta o serviço
     public MensagemController(MensagemService mensagemService) {
         this.mensagemService = mensagemService;
     }
 
     // cria uma nova mensagem (POST)
-    @PostMapping
+    @PostMapping("/enviar")
     public ResponseEntity<Mensagem> salvarMensagem(@RequestBody Mensagem mensagem) {
         Mensagem mensagemSalva = mensagemService.salvarMensagem(mensagem);
+        messagingTemplate.convertAndSend("/topic/mensagens", mensagem);
         return ResponseEntity.ok(mensagemSalva); // Retorna a mensagem salva para o frontend
     }
 

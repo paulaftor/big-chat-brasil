@@ -3,6 +3,7 @@ import com.sd.demo.entity.Mensagem;
 import com.sd.demo.repository.MensagemRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class MensagemService {
     }
 
     public Mensagem salvarMensagem(Mensagem mensagem) {
+        mensagem.setDataEnvio(LocalDateTime.now());
         Mensagem mensagemSalva = mensagemRepository.save(mensagem);
         logger.info("Mensagem salva no banco de dados: {}", mensagemSalva);
         rabbitTemplate.convertAndSend(exchange, "", mensagemSalva);

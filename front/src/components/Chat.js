@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
+import axios from 'axios';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import './Chat.css';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
     const [username, setUsername] = useState('');
+    const [stompClient, setStompClient] = useState(null);
 
-    // Recuperar as informações do usuário logado do local storage na inicialização
+    // Referência para a lista de mensagens
+    const messagesEndRef = useRef(null);
+
     useEffect(() => {
         const loggedInUser = localStorage.getItem('loggedInUser');
         if (loggedInUser) {
@@ -16,78 +22,91 @@ const Chat = () => {
         }
     }, []);
 
+    // Conectar ao WebSocket
+    useEffect(() => {
+        const socket = new SockJS('http://localhost:8080/chat-websocket');
+        const client = new Client({
+            webSocketFactory: () => socket,
+            onConnect: () => {
+                console.log('Conectado ao WebSocket');
+                client.subscribe('/topic/mensagens', (message) => {
+                    // Atualiza a lista de mensagens e rola para a última
+                    setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
+                });
+            },
+            onStompError: (error) => {
+                console.error('Erro STOMP:', error);
+            },
+        });
+
+        client.activate();
+        setStompClient(client);
+
+        return () => {
+            client.deactivate();
+        };
+    }, []);
+
     // Função para enviar a mensagem
     const handleSendMessage = async () => {
         if (!message || !username) return;
 
         const newMessage = {
-            username,
             conteudo: message,
-            timestamp: new Date().toISOString(), // Timestamp no formato ISO 8601
+            remetente: username,
         };
 
         try {
-            // Envia a mensagem para o backend
-            const response = await fetch('/mensagens', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newMessage), // Envia a mensagem em formato JSON
-            });
-
-            if (response.ok) {
-                // Obtém a mensagem salva do backend e atualiza a lista de mensagens
-                const savedMessage = await response.json();
-                setMessages((prevMessages) => [...prevMessages, savedMessage]);
-                setMessage(''); // Limpa o campo de input
-            } else {
-                console.error('Erro ao salvar mensagem');
-            }
+            // Envia a mensagem via POST
+            await axios.post('http://localhost:8080/mensagens/enviar', newMessage);
+            setMessage('');
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('Erro ao enviar mensagem:', error);
         }
     };
 
-    // Função para carregar mensagens do banco
+    // Função para carregar as mensagens
     const loadMessages = async () => {
         try {
-            const response = await fetch('/mensagens');
-            if (response.ok) {
-                const fetchedMessages = await response.json();
-                setMessages(fetchedMessages); // Atualiza a lista de mensagens
-            } else {
-                console.error('Erro ao carregar mensagens');
-            }
+            const response = await axios.get('http://localhost:8080/mensagens');
+            setMessages(response.data);
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('Erro ao carregar mensagens:', error);
         }
     };
 
-    // Carrega mensagens na inicialização
     useEffect(() => {
         loadMessages();
     }, []);
 
+    // Efeito para rolar a página para a última mensagem sempre que as mensagens mudarem
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
     return (
         <div className="chat-container">
             <div className="message-list">
-                {/* Verifica se há mensagens e renderiza com base nisso */}
                 {messages.length > 0 ? (
                     messages.map((msg, index) => (
                         <div key={index} className="message-item">
                             <div className="message-body">
-                                <strong style={{ color: '#7eabff' }}>{msg.username}</strong>{' '}
+                                <strong style={{ color: '#7eabff' }}>{msg.remetente}</strong>{' '}
                                 <span className="message-timestamp">
-                                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    {new Date(msg.dataEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                                 <p>{msg.conteudo}</p>
                             </div>
+
                         </div>
                     ))
                 ) : (
-                    <div className="no-messages">Ainda não há mensagens.</div> // Exibe uma mensagem padrão se não houver mensagens
+                    <div className="no-messages">Ainda não há mensagens.</div>
                 )}
+                {/* Este ref ajuda a rolar até a última mensagem */}
+                <div ref={messagesEndRef} />
             </div>
             <div className="input-section">
                 <input

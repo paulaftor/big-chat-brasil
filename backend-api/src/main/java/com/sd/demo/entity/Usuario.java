@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 
 @Entity
 public class Usuario {
@@ -11,7 +12,10 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)  // Garante que o username seja único
     private String username;
+
     private String email;
     private String senha;
 
@@ -47,5 +51,4 @@ public class Usuario {
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
 }
