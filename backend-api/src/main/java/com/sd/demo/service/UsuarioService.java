@@ -1,25 +1,16 @@
 package com.sd.demo.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sd.demo.dto.Login;
 import com.sd.demo.dto.NotificacaoUsuario;
 import com.sd.demo.entity.Usuario;
 import com.sd.demo.repository.UsuarioRepository;
-import org.apache.qpid.proton.engine.Sasl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.core.MessageBuilder;
-
 
 import java.util.List;
 
@@ -28,35 +19,62 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final RabbitTemplate rabbitTemplate;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final String exchange = "usuario-exchange";
 
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    private final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
-    //private final RabbitTemplate rabbitTemplate;
-
-
-    public UsuarioService(UsuarioRepository UsuarioRepository, RabbitTemplate rabbitTemplate) {
-        this.usuarioRepository = UsuarioRepository;
+    public UsuarioService(UsuarioRepository usuarioRepository, RabbitTemplate rabbitTemplate, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    public Usuario autenticar(String dadosLogin, String senhaUsuario) {
+        Usuario usuario;
+        if (dadosLogin.matches(".*@.*")) {
+            usuario = usuarioRepository.findByEmail(dadosLogin);
+        } else {
+            usuario = usuarioRepository.findByUsername(dadosLogin);
+        }
+
+        if (usuario == null) {
+            return null;
+        }
+
+        String senhaNoBanco = usuario.getSenha();
+        if (passwordEncoder.matches(senhaUsuario, senhaNoBanco)) {
+            return usuario;
+        } else {
+            return null;
+        }
+    }
 
     public Usuario salvarUsuario(Usuario usuario) {
+        if (usuario.getSenha() == null || usuario.getSenha().isEmpty()) {
+            throw new IllegalArgumentException("A senha não pode ser vazia");
+        }
+
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
         usuario.setSenha(senhaCriptografada);
+
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
         logger.info("Usuario salvo no banco de dados: {}", usuarioSalvo);
 
-        NotificacaoUsuario notificacao = new NotificacaoUsuario(usuarioSalvo.getUsername(), usuarioRepository.findEmails());
-        rabbitTemplate.convertAndSend(exchange, "", notificacao);
-        logger.info("Notificação enviada para o RabbitMQ: {}", notificacao);
+        try {
+            NotificacaoUsuario notificacao = new NotificacaoUsuario(usuarioSalvo.getUsername(), usuarioRepository.findEmails());
+            String mensagem = objectMapper.writeValueAsString(notificacao);
+
+            rabbitTemplate.convertAndSend(exchange, "", mensagem);
+            logger.info("Notificação enviada para o RabbitMQ: {}", mensagem);
+        } catch (Exception e) {
+            logger.error("Erro ao enviar notificação para o RabbitMQ: {}", e.getMessage());
+        }
+
         return usuarioSalvo;
     }
-
 
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
@@ -66,44 +84,34 @@ public class UsuarioService {
         return usuarioRepository.findById(id).orElse(null);
     }
 
-    public  Boolean autenticar(String dadosLogin, String senhaUsuario) {
-        Usuario usuario;
-        if(dadosLogin.matches(".*@.*")) {
-            usuario = usuarioRepository.findByEmail(dadosLogin);
-        } else {
-            usuario = usuarioRepository.findByUsername(dadosLogin);
-        }
-
-        if (usuario == null)
-            return false;
-
-        String senhaNoBanco = usuario.getSenha();
-        return passwordEncoder.matches(senhaUsuario, senhaNoBanco);
-    }
-
     public boolean deletarUsuario(Long id) {
         if (usuarioRepository.existsById(id)) {
             usuarioRepository.deleteById(id);
+            logger.info("Usuário com ID {} deletado com sucesso.", id);
             return true;
         }
+        logger.warn("Usuário com ID {} não encontrado.", id);
         return false;
     }
 
     public Usuario atualizarSenhaUsuario(Login dados) {
         Usuario usuario;
-        if(dados.inputIsEmail())
+
+        if (dados.inputIsEmail()) {
             usuario = usuarioRepository.findByEmail(dados.getInput());
-        else
+        } else {
             usuario = usuarioRepository.findByUsername(dados.getInput());
+        }
 
         if (usuario != null) {
             String senhaCriptografada = passwordEncoder.encode(dados.getSenha());
             usuario.setSenha(senhaCriptografada);
             usuarioRepository.save(usuario);
+            logger.info("Senha atualizada para o usuário: {}", usuario.getUsername());
+        } else {
+            logger.warn("Usuário não encontrado para atualização de senha: {}", dados.getInput());
         }
 
         return usuario;
     }
-
 }
-

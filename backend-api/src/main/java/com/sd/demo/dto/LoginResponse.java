@@ -1,34 +1,38 @@
 package com.sd.demo.dto;
 
-public class Login {
-    private String input;
-    private String senha;
+public class LoginResponse {
+    private String token;
+    private Long userId;
+    private String username;
 
-    public Login() {
+    public LoginResponse(String token, Long userId, String username) {
+        this.token = token;
+        this.userId = userId;
+        this.username = username;
     }
 
-    public Login(String input, String senha) {
-        this.input = input;
-        this.senha = senha;
+    // Getters e Setters
+    public String getToken() {
+        return token;
     }
 
-    public String getInput() {
-        return input;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public void setInput(String input) {
-        this.input = input;
+    public Long getUserId() {
+        return userId;
     }
 
-    public Boolean inputIsEmail() {
-        return input.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$");
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getUsername() {
+        return username;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

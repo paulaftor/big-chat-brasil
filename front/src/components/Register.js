@@ -1,52 +1,49 @@
-// src/components/Register.js
 import React, { useState } from 'react';
-import axios from 'axios'; // Importe o axios
-import './Register.css'; // CSS para o estilo
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './Register.css';
 
 const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
-   const handleSubmit = async (e) => {
-       e.preventDefault();
-       const userData = {
-           username,
-           password,
-           email,
-       };
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    const userData = { username, senha: password, email };
 
-       // Validações adicionais
-       if (!username || !password || !email) {
-           console.error('Todos os campos são obrigatórios.');
-           return; // Interrompe a execução se algum campo estiver vazio
-       }
+    try {
+        const response = await axios.post('http://localhost:8080/usuarios/cadastrar', userData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-       // Validação de formato de email (opcional)
-       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-       if (!emailRegex.test(email)) {
-           console.error('Email inválido.');
-           return; // Interrompe a execução se o email for inválido
-       }
-
-       try {
-           const response = await axios.post('http://localhost:8080/api/usuarios/cadastrar', userData, {
-               headers: {
-                   'Content-Type': 'application/json',
-                   'Authorization': 'Basic ' + btoa('user:password')
-               },
-           });
-           console.log(response.data);
-       } catch (error) {
-           console.error('Error:', error);
-       }
-   };
+        console.log('Usuário cadastrado com sucesso:', response.data);
+        localStorage.setItem('loggedInUser', JSON.stringify(response.data));
+        setErrorMessage('');
+        navigate('/chat');
+    } catch (error) {
+        if (error.response) {
+            // Erro com resposta do servidor
+            console.error('Erro ao cadastrar:', error.response.data);
+            setErrorMessage('Erro: ' + (error.response.data.message || 'Não foi possível cadastrar o usuário.'));
+        } else {
+            // Erro de rede ou outro problema
+            console.error('Erro na requisição:', error);
+            setErrorMessage('Erro ao conectar com o servidor.');
+        }
+    }
+};
 
 
     return (
         <div className="register-container">
             <form onSubmit={handleSubmit}>
                 <h2>Crie sua conta</h2>
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <input
                     type="text"
                     placeholder="Username"

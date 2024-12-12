@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/mensagens")
 public class MensagemController {
@@ -20,9 +21,9 @@ public class MensagemController {
 
     // cria uma nova mensagem (POST)
     @PostMapping
-    public ResponseEntity<Mensagem> criarMensagem(@RequestBody Mensagem mensagem) {
-        Mensagem novaMensagem = mensagemService.salvarMensagem(mensagem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaMensagem);
+    public ResponseEntity<Mensagem> salvarMensagem(@RequestBody Mensagem mensagem) {
+        Mensagem mensagemSalva = mensagemService.salvarMensagem(mensagem);
+        return ResponseEntity.ok(mensagemSalva); // Retorna a mensagem salva para o frontend
     }
 
     // busca todas as mensagens (GET)

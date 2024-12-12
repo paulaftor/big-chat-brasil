@@ -1,36 +1,28 @@
-public class LoginResponse {
-    private String token;
-    private Long userId;
-    private String username;
+package com.sd.demo.dto;
 
-    public LoginResponse(String token, Long userId, String username) {
-        this.token = token;
-        this.userId = userId;
-        this.username = username;
+public class ErrorResponse {
+    private String message;
+    private int code;
+
+    public ErrorResponse(String message, int code) {
+        this.message = message;
+        this.code = code;
     }
 
     // Getters e Setters
-    public String getToken() {
-        return token;
+    public String getMessage() {
+        return message;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public Long getUserId() {
-        return userId;
+    public int getCode() {
+        return code;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCode(int code) {
+        this.code = code;
     }
 }

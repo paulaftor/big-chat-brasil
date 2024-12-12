@@ -31,7 +31,7 @@ public class MensagemService {
     }
 
     public List<Mensagem> listarMensagens() {
-        return mensagemRepository.findAll();
+        return mensagemRepository.findAllByOrderByDataEnvioAsc(); // Agora as mensagens são ordenadas
     }
 
     public Mensagem buscarMensagemPorId(Long id) {
