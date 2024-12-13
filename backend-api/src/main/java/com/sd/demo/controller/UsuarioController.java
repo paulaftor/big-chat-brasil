@@ -20,7 +20,6 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final JwtService jwtService;  // Injetando o JwtService
 
-    // Injeta os serviços
     public UsuarioController(UsuarioService usuarioService, JwtService jwtService) {
         this.usuarioService = usuarioService;
         this.jwtService = jwtService;
@@ -40,6 +39,12 @@ public class UsuarioController {
 
     @PostMapping("/autenticar")
     public ResponseEntity<?> autenticar(@RequestBody Login dadosLogin) {
+        System.out.println("Dados de Login recebidos: " + dadosLogin.getInput() + " senha = " + dadosLogin.getSenha());
+
+        if (dadosLogin == null || dadosLogin.getInput() == null || dadosLogin.getSenha() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Dados de login inválidos", 400));
+        }
+
         Usuario usuario = usuarioService.autenticar(dadosLogin.getInput(), dadosLogin.getSenha());
         if (usuario != null) {
             String token = jwtService.gerarToken(usuario);
@@ -48,6 +53,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Credenciais inválidas", 401));
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {

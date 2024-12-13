@@ -7,7 +7,7 @@
 }
 
 .message-item {
-    background-color: rgba(255, 255, 255, 0.45); /* Cor do balão */
+    background-color: rgba(255, 255, 255); /* Cor do balão */
     border-radius: 20px; /* Bordas arredondadas para o balão */
     margin-bottom: 10px;
     padding: 10px;
@@ -33,7 +33,7 @@
     height: 10;
     border-top: 10px solid transparent; /* Cria a base do triângulo */
     border-bottom: 10px solid transparent; /* Cria a base do triângulo */
-    border-right: 11px solid rgba(255, 255, 255, 0.45); /* Cor do balão, simula o bico */
+    border-right: 11px solid rgba(255, 255, 255); /* Cor do balão, simula o bico */
 }
 
 .message-header {
@@ -64,8 +64,8 @@
 
 .message-timestamp {
     font-size: 0.8rem;
-    color: #2c549e;
-    padding: 0 10px;
+    color: #8bb7ff;
+    padding: 0 15px;
 }
 
 .message-body {
@@ -137,4 +137,19 @@
     color: #7eabff;
     font-size: 1.2em;
     margin-top: 20px;
+}
+
+.emoji-picker {
+    position: absolute;
+    bottom: 60px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.emoji-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 10px;
+    color: #7eabff;
 }

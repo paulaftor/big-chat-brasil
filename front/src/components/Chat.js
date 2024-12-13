@@ -95,6 +95,7 @@ const Chat = () => {
                             <div className="message-body">
                                 <strong style={{ color: '#7eabff' }}>{msg.remetente}</strong>{' '}
                                 <span className="message-timestamp">
+                                    {new Date(msg.dataEnvio).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às{' '}
                                     {new Date(msg.dataEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                                 <p>{msg.conteudo}</p>

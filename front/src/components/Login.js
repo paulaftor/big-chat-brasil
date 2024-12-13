@@ -1,41 +1,42 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Login.css'; // importando o CSS
 import { Link } from 'react-router-dom'; // Usando o Link para redirecionar
+import { useNavigate } from 'react-router-dom'; // Importando o useNavigate
 
 const Login = () => {
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [senha, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    // Usando useNavigate para redirecionamento
+    const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');  // Limpa o erro antes de tentar enviar
-        setIsLoading(true);  // Ativa o carregamento
+        const userData = {input: username, senha};
 
         try {
-            const response = await fetch('http://seu-backend.com/api/usuarios/autenticar', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:8080/usuarios/autenticar', userData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ input: username, senha: password }),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('userId', data.userId);
-                localStorage.setItem('username', data.username);
-                window.location.href = '/chat';  // Redireciona após login bem-sucedido
-            } else {
-                setError('Credenciais inválidas');
-            }
+            console.log('Usuário autenticado com sucesso:', response.data);
+            localStorage.setItem('loggedInUser', JSON.stringify(response.data));
+            setError(''); // Limpa a mensagem de erro
+            navigate('/chat'); // Redireciona para a página de chat
         } catch (error) {
-            setError('Erro durante a autenticação');
-            console.error('Erro durante a autenticação:', error);
-        } finally {
-            setIsLoading(false);  // Desativa o carregamento após a requisição
+            if (error.response) {
+                console.error('Erro ao logar:', error.response.data);
+                setError('Erro: ' + (error.response.data.message || 'Não foi possível fazer login do usuário.'));
+            } else {
+                // Erro de rede ou outro problema
+                console.error('Erro na requisição:', error);
+                setError('Erro ao conectar com o servidor.');
+            }
         }
     };
 
@@ -57,7 +58,7 @@ const Login = () => {
                 <input
                     type="password"
                     placeholder="Password"
-                    value={password}
+                    value={senha}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
