@@ -1,5 +1,6 @@
 package com.sd.email.listener;
 
+import com.sd.email.dto.NotificacaoMensagem;
 import com.sd.email.dto.NotificacaoUsuario;
 import com.sd.email.service.EmailService;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class MensagemListener {
     }
 
     @RabbitListener(queues = "mensagem-queue")
-    public void receberMensagem(NotificacaoUsuario notificacao) {
+    public void receberMensagem(NotificacaoMensagem notificacao) {
 
         logger.info("Tentando consumir a mensagem...");
 

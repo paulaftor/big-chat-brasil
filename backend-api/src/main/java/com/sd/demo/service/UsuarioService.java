@@ -65,10 +65,9 @@ public class UsuarioService {
 
         try {
             NotificacaoUsuario notificacao = new NotificacaoUsuario(usuarioSalvo.getUsername(), usuarioRepository.findEmails());
-            String mensagem = objectMapper.writeValueAsString(notificacao);
+            rabbitTemplate.convertAndSend(exchange, "", notificacao);  // Envie o objeto diretamente
 
-            rabbitTemplate.convertAndSend(exchange, "", mensagem);
-            logger.info("Notificação enviada para o RabbitMQ: {}", mensagem);
+            logger.info("Notificação enviada para o RabbitMQ: {}", notificacao);
         } catch (Exception e) {
             logger.error("Erro ao enviar notificação para o RabbitMQ: {}", e.getMessage());
         }

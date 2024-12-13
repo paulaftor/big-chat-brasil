@@ -1,19 +1,14 @@
 package com.sd.email.dto;
-
 import java.util.List;
 
 public class NotificacaoUsuario {
     private String novoUsuario;
     private List<String> emailsUsuarios;
 
-    public NotificacaoUsuario() {
-    }
+    // Construtor sem argumentos
+    public NotificacaoUsuario() {}
 
-    public NotificacaoUsuario(String novoUsuario, List<String> emailsUsuarios) {
-        this.novoUsuario = novoUsuario;
-        this.emailsUsuarios = emailsUsuarios;
-    }
-
+    // Getters e Setters
     public String getNovoUsuario() {
         return novoUsuario;
     }
@@ -29,5 +24,4 @@ public class NotificacaoUsuario {
     public void setEmailsUsuarios(List<String> emailsUsuarios) {
         this.emailsUsuarios = emailsUsuarios;
     }
-
 }

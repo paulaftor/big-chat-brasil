@@ -1,6 +1,8 @@
 package com.sd.demo.service;
+import com.sd.demo.dto.NotificacaoMensagem;
 import com.sd.demo.entity.Mensagem;
 import com.sd.demo.repository.MensagemRepository;
+import com.sd.demo.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,21 +16,24 @@ import org.springframework.stereotype.Service;
 public class MensagemService {
 
     private final MensagemRepository mensagemRepository;
+    private final UsuarioRepository usuarioRepository;
     private final Logger logger = LoggerFactory.getLogger(MensagemService.class);
     private final RabbitTemplate rabbitTemplate;
     private final String exchange = "mensagem-exchange";
 
-    public MensagemService(MensagemRepository mensagemRepository, RabbitTemplate rabbitTemplate) {
+    public MensagemService(MensagemRepository mensagemRepository, RabbitTemplate rabbitTemplate, UsuarioRepository usuarioRepository) {
         this.mensagemRepository = mensagemRepository;
         this.rabbitTemplate = rabbitTemplate;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Mensagem salvarMensagem(Mensagem mensagem) {
         mensagem.setDataEnvio(LocalDateTime.now());
         Mensagem mensagemSalva = mensagemRepository.save(mensagem);
         logger.info("Mensagem salva no banco de dados: {}", mensagemSalva);
-        rabbitTemplate.convertAndSend(exchange, "", mensagemSalva);
-        logger.info("Mensagem enviada para o RabbitMQ: {}", mensagemSalva);
+        NotificacaoMensagem notificacao = new NotificacaoMensagem(mensagemSalva.getConteudo(),mensagemSalva.getRemetente(),usuarioRepository.findEmails());
+        rabbitTemplate.convertAndSend(exchange, "", notificacao);
+        logger.info("Mensagem enviada para o RabbitMQ: {}", notificacao);
         return mensagemSalva;
     }
 
