@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';  // Certifique-se de que o caminho está correto
+import './App.css';  
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Chat from './components/Chat';

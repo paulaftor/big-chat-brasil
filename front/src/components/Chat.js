@@ -8,10 +8,10 @@ import './Chat.css';
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
+    const [telefoneDestinatario, setTelefoneDestinatario] = useState('');
+    const [isWhatsapp, setIsWhatsapp] = useState(false);
     const [username, setUsername] = useState('');
     const [stompClient, setStompClient] = useState(null);
-
-    // Referência para a lista de mensagens
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
@@ -22,7 +22,6 @@ const Chat = () => {
         }
     }, []);
 
-    // Conectar ao WebSocket
     useEffect(() => {
         const socket = new SockJS('http://localhost:8080/chat-websocket');
         const client = new Client({
@@ -30,8 +29,7 @@ const Chat = () => {
             onConnect: () => {
                 console.log('Conectado ao WebSocket');
                 client.subscribe('/topic/mensagens', (message) => {
-                    // Atualiza a lista de mensagens e rola para a última
-                    setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
+                    setMessages((prev) => [...prev, JSON.parse(message.body)]);
                 });
             },
             onStompError: (error) => {
@@ -47,17 +45,16 @@ const Chat = () => {
         };
     }, []);
 
-    // Função para enviar a mensagem
     const handleSendMessage = async () => {
-        if (!message || !username) return;
+        if (!message || !telefoneDestinatario) return;
 
         const newMessage = {
             conteudo: message,
-            remetente: username,
+            telefoneDestinatario,
+            flWhatsapp: isWhatsapp,
         };
 
         try {
-            // Envia a mensagem via POST
             await axios.post('http://localhost:8080/mensagens/enviar', newMessage);
             setMessage('');
         } catch (error) {
@@ -65,7 +62,6 @@ const Chat = () => {
         }
     };
 
-    // Função para carregar as mensagens
     const loadMessages = async () => {
         try {
             const response = await axios.get('http://localhost:8080/mensagens');
@@ -79,7 +75,6 @@ const Chat = () => {
         loadMessages();
     }, []);
 
-    // Efeito para rolar a página para a última mensagem sempre que as mensagens mudarem
     useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -93,29 +88,53 @@ const Chat = () => {
                     messages.map((msg, index) => (
                         <div key={index} className="message-item">
                             <div className="message-body">
-                                <strong style={{ color: '#7eabff' }}>{msg.remetente}</strong>{' '}
+                                <strong style={{ color: '#7eabff' }}>{msg.remetente || 'Sistema'}</strong>{' '}
                                 <span className="message-timestamp">
-                                    {new Date(msg.dataEnvio).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às{' '}
+                                    {new Date(msg.dataEnvio).toLocaleDateString('pt-BR')} às{' '}
                                     {new Date(msg.dataEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                                 <p>{msg.conteudo}</p>
+                                <small>
+                                    Para: {msg.telefoneDestinatario} •{' '}
+                                    {msg.flWhatsapp ? 'WhatsApp' : 'SMS'} •{' '}
+                                    Status: <strong>{msg.status}</strong>
+                                </small>
                             </div>
-
                         </div>
                     ))
                 ) : (
                     <div className="no-messages">Ainda não há mensagens.</div>
                 )}
-                {/* Este ref ajuda a rolar até a última mensagem */}
                 <div ref={messagesEndRef} />
             </div>
+
+            {/* Campos adicionais acima do campo de mensagem */}
+            <div className="input-section extra-inputs">
+                <input
+                    type="text"
+                    placeholder="Telefone do destinatário"
+                    value={telefoneDestinatario}
+                    onChange={(e) => setTelefoneDestinatario(e.target.value)}
+                    required
+                />
+                <label className="whatsapp-flag">
+                    <input
+                        type="checkbox"
+                        checked={isWhatsapp}
+                        onChange={() => setIsWhatsapp((prev) => !prev)}
+                    />
+                    Enviar via WhatsApp
+                </label>
+            </div>
+
+            {/* Campo de mensagem e botão de envio */}
             <div className="input-section">
                 <input
                     type="text"
                     placeholder="Digite sua mensagem"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} // Permite envio ao pressionar Enter
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 />
                 <button onClick={handleSendMessage}>
                     <FaPaperPlane size={20} />

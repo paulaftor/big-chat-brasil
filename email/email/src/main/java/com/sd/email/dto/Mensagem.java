@@ -1,31 +1,21 @@
-package com.sd.demo.entity;
+package com.sd.email.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 public class Mensagem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String conteudo;
 
-    @Column(name = "telefone_destinatario", nullable = false)
     private String telefoneDestinatario;
 
-    @Column(name = "fl_whatsapp")
     private boolean flWhatsapp;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @Column(name = "data_envio")
     private LocalDateTime dataEnvio;
 
-    @Enumerated(EnumType.STRING)
     private StatusMensagem status;
 
     public Mensagem() {

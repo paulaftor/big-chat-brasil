@@ -1,20 +1,20 @@
 package com.sd.demo.dto;
 
-import java.util.List;
+import com.sd.demo.entity.Cliente;
 
 public class NotificacaoMensagem {
     private String mensagem;
-    private String remetente;
+    private Cliente remetente;
+    private String destinatario;
 
-    private List<String> emailsUsuarios;
 
     public NotificacaoMensagem() {
     }
 
-    public NotificacaoMensagem(String mensagem, String remetente, List<String> emailsUsuarios) {
+    public NotificacaoMensagem(String mensagem, Cliente remetente, String destinatario) {
         this.mensagem = mensagem;
         this.remetente = remetente;
-        this.emailsUsuarios = emailsUsuarios;
+        this.destinatario = destinatario;
     }
 
     public String getMensagem() {
@@ -25,20 +25,20 @@ public class NotificacaoMensagem {
         this.mensagem = mensagem;
     }
 
-    public String getRemetente() {
+    public Cliente getRemetente() {
         return remetente;
     }
 
-    public void setRemetente(String remetente) {
+    public void setRemetente(Cliente remetente) {
         this.remetente = remetente;
     }
 
-    public List<String> getEmailsUsuarios() {
-        return emailsUsuarios;
+    public String getDestinatario() {
+        return destinatario;
     }
 
-    public void setEmailsUsuarios(List<String> emailsUsuarios) {
-        this.emailsUsuarios = emailsUsuarios;
+    public void setDestinatario(String destinatario) {
+        this.destinatario = destinatario;
     }
 
 }

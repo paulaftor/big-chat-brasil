@@ -1,7 +1,11 @@
 package com.sd.demo.controller;
 
 import com.sd.demo.entity.Mensagem;
+import com.sd.demo.entity.StatusMensagem;
+import com.sd.demo.service.ClienteService;
 import com.sd.demo.service.MensagemService;
+
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +19,15 @@ import java.util.List;
 @RequestMapping("/mensagens")
 public class MensagemController {
     private final MensagemService mensagemService;
-
+    private final ClienteService clienteService;
+    
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     // injeta o serviço
-    public MensagemController(MensagemService mensagemService) {
+    public MensagemController(MensagemService mensagemService, ClienteService clienteService) {
         this.mensagemService = mensagemService;
+        this.clienteService = clienteService;
     }
 
     // cria uma nova mensagem (POST)
@@ -29,7 +35,25 @@ public class MensagemController {
     public ResponseEntity<Mensagem> salvarMensagem(@RequestBody Mensagem mensagem) {
         Mensagem mensagemSalva = mensagemService.salvarMensagem(mensagem);
         messagingTemplate.convertAndSend("/topic/mensagens", mensagem);
-        return ResponseEntity.ok(mensagemSalva); // Retorna a mensagem salva para o frontend
+        return ResponseEntity.ok(mensagemSalva); // retorna a mensagem salva para o frontend
+    }
+
+    // recebendo a resposta que a mensagem foi processada
+    @RabbitListener(queues = "resposta-queue")
+    public void receberResposta(Mensagem mensagem) {
+
+        if(mensagem.getStatus().equals(StatusMensagem.PROCESSADO)){
+            System.out.println("Mensagem recebida: " + mensagem.getConteudo());
+            
+        }
+        else if(mensagem.getStatus().equals(StatusMensagem.ERRO)){
+            System.out.println("Erro ao enviar a mensagem: " + mensagem.getConteudo());
+            // Estorna o saldo do cliente 
+            clienteService.estornarSaldo(mensagem.getCliente());
+        }
+
+        mensagemService.atualizarStatus(mensagem, StatusMensagem.PROCESSADO);
+        
     }
 
     // busca todas as mensagens (GET)
@@ -39,13 +63,14 @@ public class MensagemController {
         return ResponseEntity.ok(mensagens);
     }
 
-    // busca uma mensagem específica por id (GET)
+    // busca mensagens de um determinado cliente 
     @GetMapping("/{id}")
-    public ResponseEntity<Mensagem> buscarMensagemPorId(@PathVariable Long id) {
-        Mensagem mensagem = mensagemService.buscarMensagemPorId(id);
+    public ResponseEntity<List<Mensagem>> buscarMensagensCliente(@PathVariable Long id) {
+        List<Mensagem> mensagem = mensagemService.buscarMensagemPorCliente(id);
         if (mensagem != null) {
             return ResponseEntity.ok(mensagem);
-        } else {
+        }
+        else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

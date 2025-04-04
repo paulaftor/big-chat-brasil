@@ -1,15 +1,9 @@
 package com.sd.email.config;
 
-import com.sd.email.listener.MensagemListener;
-import com.sd.email.listener.UsuarioListener;
-import com.sd.email.service.EmailService;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -24,6 +18,9 @@ public class RabbitMQConfig {
 
     private String exchangeUsuario = "usuario-exchange";
     private String queueUsuario = "usuario-queue";
+
+    private String exchangeResposta = "resposta-exchange";
+    private String queueResposta = "resposta-queue";
 
 
     /**
@@ -102,6 +99,20 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(usuarioQueue).to(usuarioExchange);
     }
 
+    @Bean
+    public Exchange respostaExchange() {
+        return new FanoutExchange(exchangeResposta);
+    }
+
+    @Bean
+    public Queue respostaQueue() {
+        return new Queue(queueResposta, true);
+    }
+
+    @Bean
+    public Binding bindingResposta(Queue respostaQueue, FanoutExchange respostaExchange) {
+        return BindingBuilder.bind(respostaQueue).to(respostaExchange);
+    }
 
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {

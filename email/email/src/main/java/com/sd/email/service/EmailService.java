@@ -1,12 +1,9 @@
 package com.sd.email.service;
-import com.sd.email.dto.NotificacaoMensagem;
 import com.sd.email.dto.NotificacaoUsuario;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.*;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -45,28 +42,6 @@ public class EmailService {
         }
     }
 
-    // Envio de e-mails para todos os usuários (para NotificacaoMensagem)
-    public void enviarEmailTodosUsuarios(NotificacaoMensagem notificacao) {
-        List<String> destinatarios = notificacao.getEmailsUsuarios();
-        for (String email : destinatarios) {
-            String assunto = "Você tem uma nova mensagem!"; // Assunto com emoji de mensagem
-
-            String corpo = "<html><body>" +
-                    "<h2>Você recebeu uma nova mensagem! &#x1F4AC;</h2>" +
-                    "<p><strong>" + notificacao.getRemetente() + "</strong> enviou uma mensagem para você:</p>" +
-                    "<blockquote style='border-left: 4px solid #ddd; padding-left: 10px; font-style: italic;'>" +
-                    notificacao.getMensagem() +
-                    "</blockquote>" +
-                    "<p>Para responder, basta acessar o Chat App! &#x1F91D;</p>" +
-                    "<br><br>" +
-                    "<p>Até logo! &#x1F64B;</p>" +
-                    "<p><em>Equipe Chat App</em></p>" +
-                    "</body></html>";
-
-
-            enviarEmail(email, assunto, corpo);
-        }
-    }
 
 
     public void enviarEmail(String to, String subject, String body) {

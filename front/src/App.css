@@ -1,22 +1,18 @@
-/* Estilos gerais para a página */
 .App {
     height: 100vh;
     display: flex;
     flex-direction: column;
     background-color:  #dde9ff;
     font-family: Arial, sans-serif;
-    padding-top: 100px; /* Ajuste conforme o tamanho do seu cabeçalho */
+    padding-top: 100px; 
 }
 
-/* Lista de mensagens */
 .message-list {
     flex: 1;
     overflow-y: auto;
     padding: 60px 20px 20px;
-    margin-bottom: 80px; /* Para não sobrepor a barra de digitação */
+    margin-bottom: 80px; 
 }
-
-/* Barra de entrada fixada na parte inferior */
 .input-section {
     position: fixed;
     bottom: 0;
@@ -29,7 +25,6 @@
     z-index: 10;
 }
 
-/* Estilo do campo de input */
 .input-section input {
     flex: 1;
     padding: 10px;
@@ -60,5 +55,5 @@
     background-color: rgba(255, 255, 255, 0.45);
     border-bottom: 1px solid #ddd;
     color: #7eabff;
-    z-index: 1000;  /* Garante que o cabeçalho fique sobre os outros elementos */
+    z-index: 1000; 
 }

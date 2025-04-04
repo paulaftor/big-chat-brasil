@@ -5,5 +5,8 @@ import com.sd.demo.entity.Mensagem;
 import java.util.List;
 
 public interface MensagemRepository extends JpaRepository<Mensagem, Long> {
-    List<Mensagem> findAllByOrderByDataEnvioAsc(); // Mensagens ordenadas por dataEnvio
+    List<Mensagem> findAllByOrderByDataEnvioAsc(); 
+    
+    // Encontrar todas as mensagens enviadas por um cliente ordenadas por dataEnvio
+    List<Mensagem> findAllByClienteIdOrderByDataEnvioAsc(Long clienteId);
 }

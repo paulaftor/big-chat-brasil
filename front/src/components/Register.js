@@ -4,67 +4,66 @@ import { useNavigate } from 'react-router-dom';
 import './Register.css';
 
 const Register = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [nome, setNome] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [cpfResponsavel, setCpfResponsavel] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [plano, setPlano] = useState('PREPAGO');
+    const [creditos, setCreditos] = useState(0);
+    const [limiteConsumo, setLimiteConsumo] = useState(0);
     const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    const userData = { username, senha: password, email };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const clienteData = {
+            nome,
+            telefone,
+            cpfResponsavel,
+            cnpj,
+            plano,
+            creditos,
+            limiteConsumo,
+            email,
+            senha
+        };
 
-    try {
-        const response = await axios.post('http://localhost:8080/usuarios/cadastrar', userData, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        try {
+            const response = await axios.post('http://localhost:8080/clientes/cadastrar', clienteData, {
+                headers: { 'Content-Type': 'application/json' },
+            });
 
-        console.log('Usuário cadastrado com sucesso:', response.data);
-        localStorage.setItem('loggedInUser', JSON.stringify(response.data));
-        setErrorMessage('');
-        navigate('/chat');
-    } catch (error) {
-        if (error.response) {
-            // Erro com resposta do servidor
-            console.error('Erro ao cadastrar:', error.response.data);
-            setErrorMessage('Erro: ' + (error.response.data.message || 'Não foi possível cadastrar o usuário.'));
-        } else {
-            // Erro de rede ou outro problema
-            console.error('Erro na requisição:', error);
-            setErrorMessage('Erro ao conectar com o servidor.');
+            console.log('Cliente cadastrado com sucesso:', response.data);
+            localStorage.setItem('loggedInUser', JSON.stringify(response.data));
+            setErrorMessage('');
+            navigate('/chat');
+        } catch (error) {
+            console.error('Erro ao cadastrar:', error);
+            setErrorMessage('Erro: ' + (error.response?.data?.message || 'Não foi possível cadastrar o cliente.'));
         }
-    }
-};
-
+    };
 
     return (
         <div className="register-container">
             <form onSubmit={handleSubmit}>
-                <h2>Crie sua conta</h2>
+                <h2>Cadastro de Cliente</h2>
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
+
+                <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
+                <input type="text" placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
+                <input type="text" placeholder="CPF do Responsável" value={cpfResponsavel} onChange={(e) => setCpfResponsavel(e.target.value)} required />
+                <input type="text" placeholder="CNPJ" value={cnpj} onChange={(e) => setCnpj(e.target.value)} required />
+                <select value={plano} onChange={(e) => setPlano(e.target.value)} required>
+                    <option value="PREPAGO">Pré-pago</option>
+                    <option value="POSPAGO">Pós-pago</option>
+                </select>
+                <input type="number" step="0.01" placeholder="Créditos" value={creditos} onChange={(e) => setCreditos(parseFloat(e.target.value))} required />
+                <input type="number" step="0.01" placeholder="Limite de Consumo" value={limiteConsumo} onChange={(e) => setLimiteConsumo(parseFloat(e.target.value))} required />
+                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+
                 <button type="submit">Cadastrar</button>
             </form>
         </div>

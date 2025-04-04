@@ -1,10 +1,8 @@
 package com.sd.email.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sd.email.dto.NotificacaoMensagem;
 import com.sd.email.dto.NotificacaoUsuario;
 import com.sd.email.service.EmailService;
-import org.springframework.amqp.core.Message;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

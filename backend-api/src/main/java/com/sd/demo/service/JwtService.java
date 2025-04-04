@@ -1,5 +1,5 @@
 package com.sd.demo.service;
-import com.sd.demo.entity.Usuario;
+import com.sd.demo.entity.Cliente;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +14,10 @@ public class JwtService {
     private String secretKey;  // Remover o final da variável, pois o Spring gerencia a injeção da chave secreta
     private final long expirationTime = 86400000; // 24 horas
 
-    public String gerarToken(Usuario usuario) {
+    public String gerarToken(Cliente Cliente) {
         return Jwts.builder()
-                .setSubject(usuario.getUsername())
-                .setId(String.valueOf(usuario.getId()))
+                .setSubject(Cliente.getNome())
+                .setId(String.valueOf(Cliente.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
